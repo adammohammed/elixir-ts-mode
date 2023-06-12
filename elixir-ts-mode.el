@@ -72,6 +72,16 @@
   :safe 'integerp
   :group 'elixir-ts)
 
+(defcustom elixir-ts-before-save-hook nil
+  "Hook to run before saving a file."
+  :type 'hook
+  :group 'elixir-ts)
+
+(defcustom elixir-ts-after-save-hook nil
+  "Hook to run after saving a file."
+  :type 'hook
+  :group 'elixir-ts)
+
 (defface elixir-ts-font-comment-doc-identifier-face
   '((t (:inherit font-lock-doc-face)))
   "Face used for @comment.doc tags in Elixir files.")
@@ -672,6 +682,10 @@ Return nil if NODE is not a defun node or doesn't have a name."
                 '("call" . elixir-ts--defun-p))
 
     (setq-local treesit-defun-name-function #'elixir-ts--defun-name)
+
+    ;; Save hooks
+    (add-hook 'before-save-hook elixir-ts-before-save-hook nil t)
+    (add-hook 'after-save-hook elixir-ts-after-save-hook nil t)
 
     ;; Embedded Heex.
     (when (treesit-ready-p 'heex)
